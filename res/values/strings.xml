@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="introhead">Where are you now?</string>
+    <string name="app_name">Women2.0</string>
+    <string name="nullList">No cities available.</string>
+    
+</resources>
