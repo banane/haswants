@@ -26,6 +26,9 @@
             android:name=".PhotoActivity" >
         </activity>
         <activity
+            android:name=".StreamActivity" >
+        </activity>
+        <activity
             android:name=".StreamProfileTabActivity" >
         </activity>
     </application>
