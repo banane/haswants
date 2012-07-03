@@ -5,6 +5,7 @@
     android:background="#ECECEC"
     android:orientation="vertical"
     android:gravity="center_horizontal" >
+  
 
     <TextView
         android:layout_width="match_parent"

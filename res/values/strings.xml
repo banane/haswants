@@ -3,6 +3,9 @@
 
     <string name="introhead">Where are you now?</string>
     <string name="app_name">Women2.0</string>
-    <string name="nullList">No cities available.</string>
+    <string name="nullList">No events are currently available.</string>
+    <string name="profilehead">Go ahead, introduce yourself.</string>
+    <string name="nameLabel">Your name:</string>
+    <string name="postButton">Post</string>
     
 </resources>
