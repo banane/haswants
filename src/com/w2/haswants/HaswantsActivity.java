@@ -49,4 +49,9 @@ public class HaswantsActivity extends Activity implements OnItemClickListener{
 		// TODO Auto-generated method stub
 		
 	}
+	public void viewOther(View v){
+		// for debugging to bypass main flow
+		Intent spTabActivity = new Intent (getApplicationContext(), StreamProfileTabActivity.class);     
+        startActivity(spTabActivity);
+	}
 }
