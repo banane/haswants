@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="introhead">Where are you now?</string>
+    <string name="introhead">Women 2.0</string>
+    <string name="introInfo">Access the Women 2.0 event</string>
+    <string name="ticketInfo">Not registered?</string>
+    <string name="buttonBuyTickets">Buy Tickets</string>
+    <string name="buttonLogin">Login</string>
     <string name="app_name">Women2.0</string>
     <string name="nullList">No events are currently available.</string>
     <string name="profilehead">Go ahead, introduce yourself.</string>
     <string name="nameLabel">Your name:</string>
     <string name="postButton">Post</string>
+    <string name="action_compose">Compose</string>
+    <string name="action_search">Search</string>
     
 </resources>

@@ -61,7 +61,7 @@ public class PhotoActivity extends Activity {
 		if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
 		    if (resultCode == RESULT_OK) {
 		        //use imageUri here to access the image
-		    	viewTabActivity();
+		    //	viewTabActivity();
 
 		    } else if (resultCode == RESULT_CANCELED) {
 		        Toast.makeText(this, "Picture was not taken", Toast.LENGTH_SHORT);
@@ -94,10 +94,10 @@ public class PhotoActivity extends Activity {
 		
 	}
 	
-	public void viewTabActivity(){
+	/*public void viewTabActivity(){
 		// go to main part of app/stream profile activity
 		Intent spTabActivity = new Intent (getApplicationContext(), StreamProfileTabActivity.class);     
         startActivity(spTabActivity);
-	}
+	}*/
 
 }
