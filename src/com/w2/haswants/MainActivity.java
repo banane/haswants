@@ -5,24 +5,30 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.app.Activity;
 import android.content.Intent;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.app.ActionBar;
 
 
 public class MainActivity extends Activity {
+	private WebView webView;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.stream);
-        
+
+        webView = (WebView) findViewById(R.id.webview);
+		webView.getSettings().setJavaScriptEnabled(true);
+		webView.setWebViewClient(new WebViewClient());
+		webView.loadUrl(getString(R.string.url_api_v1));
     }
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu items for use in the action bar
+       
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.mainmenu, menu);
         return super.onCreateOptionsMenu(menu);
@@ -35,8 +41,8 @@ public class MainActivity extends Activity {
             case R.id.action_search:
                 openSearch();
                 return true;
-            case R.id.action_compose:
-                composeMessage();
+            case R.id.action_profile:
+                openProfile();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -44,11 +50,12 @@ public class MainActivity extends Activity {
     }
    
     public void openSearch(){
+    	//startActivity(new Intent(this, Search.class));
     	
     }
     
-    public void composeMessage(){
-    	
+    public void openProfile(){
+    	startActivity(new Intent(this, ProfileActivity.class));
     }
 
 }

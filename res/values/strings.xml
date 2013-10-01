@@ -11,7 +11,8 @@
     <string name="profilehead">Go ahead, introduce yourself.</string>
     <string name="nameLabel">Your name:</string>
     <string name="postButton">Post</string>
-    <string name="action_compose">Compose</string>
+    <string name="action_profile">Your Profile</string>
     <string name="action_search">Search</string>
+    <string name="url_api_v1">http://10.0.2.2:3000/api/v1/people</string>
     
 </resources>
