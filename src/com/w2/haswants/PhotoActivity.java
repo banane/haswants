@@ -93,11 +93,5 @@ public class PhotoActivity extends Activity {
 		}
 		
 	}
-	
-	/*public void viewTabActivity(){
-		// go to main part of app/stream profile activity
-		Intent spTabActivity = new Intent (getApplicationContext(), StreamProfileTabActivity.class);     
-        startActivity(spTabActivity);
-	}*/
 
 }

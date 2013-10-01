@@ -17,44 +17,52 @@
         android:textStyle="bold" />
     
      <TextView
-        android:layout_width="match_parent"
-        android:layout_height="59dp"
+        android:id = "@+id/introTV"
+        android:layout_width="300dip"
+        android:layout_height="15dip"
         android:layout_marginTop="10dip"
         android:gravity="center"
         android:text="@string/introInfo"
-        android:textColor="#000" />
+        android:textColor="#000" 
+        android:layout_weight="1"
+		android:ellipsize="none"
+		android:maxLines="100"
+		android:scrollHorizontally="false"
+        />
 
     <EditText
-        android:id="@+id/editText1"
-        android:layout_width="match_parent"
+        android:id="@+id/emailET"
+        android:layout_width="300dip"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textEmailAddress" >
+        android:layout_marginBottom="20dip"
+        android:layout_marginTop="40dip"
+        android:ems="18"
+        android:inputType="textEmailAddress"
+        android:textColor="#000" >
 
         <requestFocus />
     </EditText>
-            
-            <Button
-                android:onClick="loginUser"
-                android:text="@string/buttonLogin"
-                android:layout_width="fill_parent"
-    			android:layout_height="35dip"
-                />
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="35dip"
+        android:layout_marginTop="10dip"
+        android:onClick="loginUser"
+        android:text="@string/buttonLogin" />
             
               <TextView
 			        android:layout_width="match_parent"
-			        android:layout_height="59dp"
-			        android:layout_marginTop="10dip"
+			        android:layout_height="15dp"
+			        android:layout_marginTop="40dip"
 			        android:gravity="center"
 			        android:text="@string/ticketInfo"
 			        android:textColor="#000" />
-			            
+
               <Button
-                android:onClick="linkEvent"
-                android:text="@string/buttonBuyTickets"
-                android:layout_marginTop="30dip"
-                android:layout_width="fill_parent"
-    			android:layout_height="35dip"
-                />
+                  android:layout_width="fill_parent"
+                  android:layout_height="35dip"
+                  android:layout_marginTop="10dip"
+                  android:onClick="linkEvent"
+                  android:text="@string/buttonBuyTickets" />
 
 </LinearLayout>

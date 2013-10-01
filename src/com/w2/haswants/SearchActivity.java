@@ -1,6 +1,5 @@
 package com.w2.haswants;
 
-
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -11,8 +10,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.app.ActionBar;
 
-
-public class MainActivity extends Activity {
+public class SearchActivity extends Activity {
 	private WebView webView;
 	
     @Override
@@ -23,7 +21,7 @@ public class MainActivity extends Activity {
         webView = (WebView) findViewById(R.id.webview);
 		webView.getSettings().setJavaScriptEnabled(true);
 		webView.setWebViewClient(new WebViewClient());
-		webView.loadUrl(getString(R.string.url_api_v1_stream));
+		webView.loadUrl(getString(R.string.url_api_v1_search));
     }
     
     @Override
@@ -39,7 +37,7 @@ public class MainActivity extends Activity {
         // Handle presses on the action bar items
         switch (item.getItemId()) {
             case R.id.action_search:
-                openSearch();
+                
                 return true;
             case R.id.action_profile:
                 openProfile();
