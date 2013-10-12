@@ -2,6 +2,7 @@ package com.w2.haswants;
 
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -9,21 +10,25 @@ import android.app.Activity;
 import android.content.Intent;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.app.ActionBar;
-
 
 public class MainActivity extends Activity {
 	private WebView webView;
+	private Person person;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.stream);
 
+        person = (Person) getIntent().getSerializableExtra("Person");
+        Log.d("haswants", "in main, id: " + person.getMyId());
+
         webView = (WebView) findViewById(R.id.webview);
 		webView.getSettings().setJavaScriptEnabled(true);
 		webView.setWebViewClient(new WebViewClient());
-		webView.loadUrl(getString(R.string.url_api_v1_stream));
+		
+		String url = getString(R.string.url_api_v1_stream) + "?auth_token=" + person.getAuthToken();
+		webView.loadUrl(url);
     }
     
     @Override
@@ -50,12 +55,18 @@ public class MainActivity extends Activity {
     }
    
     public void openSearch(){
-    	//startActivity(new Intent(this, Search.class));
+    	Intent searchActivity = new Intent (getApplicationContext(), SearchActivity.class);     
+    	searchActivity.putExtra("Person",person);
+    	startActivity(searchActivity);
     	
     }
     
     public void openProfile(){
-    	startActivity(new Intent(this, ProfileActivity.class));
+    	
+    	Intent profileActivity = new Intent (getApplicationContext(), ProfileActivity.class);     
+    	profileActivity.putExtra("Person",person);
+    	startActivity(profileActivity);
+    	
     }
 
 }

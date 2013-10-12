@@ -26,20 +26,31 @@ import android.widget.TextView;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 
 public class LoginActivity extends Activity {
     /** Called when the activity is first created. */
 	private EditText emailET;
+	private TextView introHeadTV;
+	private TextView introTV;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
         
+        Typeface typeFace=Typeface.createFromAsset(getAssets(),"fonts/Lato-Bol.ttf");
+        
+        introHeadTV = (TextView) findViewById(R.id.introHeadTV);
+        introTV = (TextView) findViewById(R.id.introTV)
+        		;
+        introHeadTV.setTypeface(typeFace);
+        introTV.setTypeface(typeFace);
+        
     }
     
     public void loginUser(View v){
-    	emailET = (EditText) findViewById(R.id.emailET);;
+    	emailET = (EditText) findViewById(R.id.emailET);
     	String emailString = emailET.getText().toString();
     	Log.d(getClass().getName(), "emailstring: " + emailString);
     	String urlString = getString(R.string.url_api_v1_login);
@@ -73,11 +84,17 @@ public class LoginActivity extends Activity {
 	            Boolean successLong = jObject.getBoolean("success");
 	            if(successLong){
 	            	// set person object
-	            	JSONObject personObj = jObject.getJSONObject("person");
+	            	//JSONObject personObj = jObject.getJSONObject("person");
+	            	String MyId = jObject.getString("id");
+	            	String firstName = jObject.getString("first_name");
+	            	String profilePhoto = jObject.getString("profile_photo");
+	            	String authToken = jObject.getString("token");
 	            	
-	            	Person person = new Person(personObj.getString("first_name"), personObj.getString("id"));
+	            	Person person = new Person(firstName, MyId, profilePhoto, authToken);
+	            	Log.d("haswants", "in loginactivity, person id: " + person.getMyId());
 		        	Intent mainActivity = new Intent (getApplicationContext(), MainActivity.class);     
-		            startActivity(mainActivity);
+		        	mainActivity.putExtra("Person",person);
+		        	startActivity(mainActivity);
 	            } else {
 	            	errorLogin();
 	            	

@@ -2,9 +2,9 @@
 <resources>
 
     <string name="introhead">Women 2.0</string>
-    <string name="introInfo">Access the Women 2.0 event</string>
+    <string name="introInfo">ACCESS THE EVENT</string>
     <string name="ticketInfo">Not registered?</string>
-    <string name="buttonBuyTickets">Buy Tickets</string>
+    <string name="buttonBuyTickets">buy ticket</string>
     <string name="buttonLogin">Login</string>
     <string name="emailError">Email is not registered for this event. Check that your email is correct."
 	</string>
@@ -15,8 +15,10 @@
     <string name="postButton">Post</string>
     <string name="action_profile">Your Profile</string>
     <string name="action_search">Search</string>
+    <string name="action_return_stream">Attending</string>
+    <string name="action_photo">Photo</string>
     <string name="url_api_v1_stream">http://10.0.2.2:3000/api/v1/people</string>
     <string name="url_api_v1_profile">http://10.0.2.2:3000/api/v1/people</string>
     <string name="url_api_v1_search">http://10.0.2.2:3000/api/v1/search</string>
-    <string name="url_api_v1_login">http://10.0.2.2:3000/api/v1/logins.json</string>
+    <string name="url_api_v1_login">http://10.0.2.2:3000/api/v1/tokens.json</string>
 </resources>

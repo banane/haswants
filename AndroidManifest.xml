@@ -37,6 +37,9 @@
         <activity
             android:name=".StreamActivity" >
         </activity>
+         <activity
+            android:name=".SearchActivity" >
+        </activity>
        
     </application>
 

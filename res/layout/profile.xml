@@ -1,50 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:background="#ECECEC"
-    android:gravity="center_horizontal"
-    android:orientation="vertical" >
-
-    <TextView
-        android:id="@+id/profilehead"
-        android:layout_width="match_parent"
-        android:layout_height="59dp"
-        android:layout_marginTop="30dip"
-        android:gravity="center"
-        android:text="@string/profilehead"
-        android:textColor="#e33868"
-        android:textStyle="bold" 
-        android:textSize="21dip"/>
-
-    <TextView
-        android:id="@+id/nameLabelTV"
-        android:layout_width="304dp"
-        android:layout_height="18dip"
-        android:layout_margin="13dip"
-        android:layout_weight="0.00"
-        android:gravity="left"
-        android:text="@string/nameLabel"
-        android:textColor="#3e3e3e"
-        android:textStyle="bold" />
-
-    <EditText
-        android:id="@+id/yourNameET"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        
-        android:ems="10" >
-
-        <requestFocus />
-    </EditText>
-   	      <Button
-	          android:id="@+id/profilePostButton"
-	          style="@style/bStyle"	          
-	          android:onClick="postProfile"
-	          android:text="@string/postButton" 
-	          android:layout_marginTop="30dip"
-	          android:visibility="visible"
-	          android:background="@drawable/post_button_sel" />
-    
-
-</LinearLayout>
+	<WebView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/webview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+		/>

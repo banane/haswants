@@ -6,9 +6,9 @@
 
     <Button
         android:id="@+id/button1"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Button" 
+        android:layout_width="426dip"
+        android:layout_height="426dip"
+        android:background="@drawable/addphoto"
         android:onClick="clickCamera"
         />
 
