@@ -30,6 +30,8 @@ public class Constants  {
 	
 	
 	public static final String PICTURE_BUCKET = "mobileprofiles";
+	public static final String BASE_URL = "http://ec2-54-215-227-19.us-west-1.compute.amazonaws.com:3000";
+//	public static final String BASE_URL = "http://10.0.1.155:3000";
 //	public static final String PICTURE_NAME = "profile_" + person.getMyId() + "_"+ numRandom.toString() +".png";
 	
 	

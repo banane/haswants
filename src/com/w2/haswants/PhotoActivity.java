@@ -1,97 +1,281 @@
+/*
+ * Copyright 2010-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License").
+ * You may not use this file except in compliance with the License.
+ * A copy of the License is located at
+ *
+ *  http://aws.amazon.com/apache2.0
+ *
+ * or in the "license" file accompanying this file. This file is distributed
+ * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing
+ * permissions and limitations under the License.
+ */
 package com.w2.haswants;
 
-import java.io.File;
-import java.net.URI;
-import java.util.List;
+import java.net.URL;
+import java.util.Date;
 
+import com.w2.haswants.R;
+
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.regions.Region;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
+import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.ResponseHeaderOverrides;
+
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
-import android.app.Activity;
-import android.content.ContentValues;
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
-import android.database.Cursor;
+import android.widget.Button;
+import java.util.Random;
 
 public class PhotoActivity extends Activity {
-	Uri imageUri;
-	int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE;
-	   @Override
-	    public void onCreate(Bundle savedInstanceState) {
-		   	super.onCreate(savedInstanceState);
-		   	setContentView(R.layout.photo);
-		   	
-	   }
-	   
-	public void clickCamera(View v){
-		//define the file-name to save photo taken by Camera activity
-		
-		String fileName = "myprofilepic.jpg";
-		ContentValues values = new ContentValues();
-		values.put(MediaStore.Images.Media.TITLE, fileName);
-		values.put(MediaStore.Images.Media.DESCRIPTION,"Image capture by camera");
-		//imageUri is the current activity attribute, define and save it for later usage (also in onSaveInstanceState)
-		imageUri = getContentResolver().insert( MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-		//create new Intent
-		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-		intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-		intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
-		startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
 
+	private AmazonS3Client s3Client = new AmazonS3Client(
+			new BasicAWSCredentials(Constants.ACCESS_KEY_ID,
+					Constants.SECRET_KEY));
 
-	}
-	/*private void dispatchTakePictureIntent(int actionCode) {
-	    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-	    startActivityForResult(takePictureIntent, actionCode);
-	}*/
+	private Button selectPhoto = null;
+	private Button showInBrowser = null;
+
+	private static final int PHOTO_SELECTED = 1;
 	
-	public static boolean isIntentAvailable(Context context, String action) {
-	    final PackageManager packageManager = context.getPackageManager();
-	    final Intent intent = new Intent(action);
-	    List<ResolveInfo> list =
-	            packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
-	    return list.size() > 0;
-	}
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
-		    if (resultCode == RESULT_OK) {
-		        //use imageUri here to access the image
-		    //	viewTabActivity();
+	private  String pictureName;
+	private Person person;
 
-		    } else if (resultCode == RESULT_CANCELED) {
-		        Toast.makeText(this, "Picture was not taken", Toast.LENGTH_SHORT);
-		    } else {
-		        Toast.makeText(this, "Picture was not taken", Toast.LENGTH_SHORT);
-		    }
-		}
-	}
-	public static File convertImageUriToFile (Uri imageUri, Activity activity)  {
-		Cursor cursor = null;
-		try {
-		    String [] proj={MediaStore.Images.Media.DATA, MediaStore.Images.Media._ID, MediaStore.Images.ImageColumns.ORIENTATION};
-		    cursor = activity.managedQuery( imageUri,
-		            proj, // Which columns to return
-		            null,       // WHERE clause; which rows to return (all rows)
-		            null,       // WHERE clause selection arguments (none)
-		            null); // Order-by clause (ascending by name)
-		    int file_ColumnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-		    int orientation_ColumnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.ImageColumns.ORIENTATION);
-		    if (cursor.moveToFirst()) {
-		        String orientation =  cursor.getString(orientation_ColumnIndex);
-		        return new File(cursor.getString(file_ColumnIndex));
-		    }
-		    return null;
-		} finally {
-		    if (cursor != null) {
-		        cursor.close();
-		    }
-		}
+
+	/** Called when the activity is first created. */
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 		
+		 person = (Person) getIntent().getSerializableExtra("Person");
+	     Log.d("haswants", "photo activity: " + person.getMyId());
+		
+		s3Client.setRegion(Region.getRegion(Regions.US_WEST_2));
+		String randomNumber = new Random().toString();
+		pictureName = "profile_" + person.getMyId() + "_" + randomNumber  + ".png";
+		
+		setContentView(R.layout.photo);
+
+		selectPhoto = (Button) findViewById(R.id.select_photo_button);
+		selectPhoto.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// Start the image picker.
+				Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+				intent.setType("image/*");
+				startActivityForResult(intent, PHOTO_SELECTED);
+			}
+		});
+
+		showInBrowser = (Button) findViewById(R.id.show_in_browser_button);
+		showInBrowser.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				new S3GeneratePresignedUrlTask().execute();
+			}
+		});
 	}
 
+	// This method is automatically called by the image picker when an image is
+	// selected.
+	protected void onActivityResult(int requestCode, int resultCode,
+			Intent imageReturnedIntent) {
+		super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
+
+		switch (requestCode) {
+		case PHOTO_SELECTED:
+			if (resultCode == RESULT_OK) {
+
+				Uri selectedImage = imageReturnedIntent.getData();
+				new S3PutObjectTask().execute(selectedImage);
+			}
+		}
+	}
+
+	// Display an Alert message for an error or failure.
+	protected void displayAlert(String title, String message) {
+
+		AlertDialog.Builder confirm = new AlertDialog.Builder(this);
+		confirm.setTitle(title);
+		confirm.setMessage(message);
+
+		confirm.setNegativeButton(
+				PhotoActivity.this.getString(R.string.ok),
+				new DialogInterface.OnClickListener() {
+
+					public void onClick(DialogInterface dialog, int which) {
+
+						dialog.dismiss();
+					}
+				});
+
+		confirm.show().show();
+	}
+
+	protected void displayErrorAlert(String title, String message) {
+
+		AlertDialog.Builder confirm = new AlertDialog.Builder(this);
+		confirm.setTitle(title);
+		confirm.setMessage(message);
+
+		confirm.setNegativeButton(
+				PhotoActivity.this.getString(R.string.ok),
+				new DialogInterface.OnClickListener() {
+
+					public void onClick(DialogInterface dialog, int which) {
+
+						PhotoActivity.this.finish();
+					}
+				});
+
+		confirm.show().show();
+	}
+
+	private class S3PutObjectTask extends AsyncTask<Uri, Void, S3TaskResult> {
+
+		ProgressDialog dialog;
+
+		protected void onPreExecute() {
+			dialog = new ProgressDialog(PhotoActivity.this);
+			dialog.setMessage(PhotoActivity.this
+					.getString(R.string.uploading));
+			dialog.setCancelable(false);
+			dialog.show();
+		}
+
+		protected S3TaskResult doInBackground(Uri... uris) {
+
+			if (uris == null || uris.length != 1) {
+				return null;
+			}
+
+			// The file location of the image selected.
+			Uri selectedImage = uris[0];
+
+			String[] filePathColumn = { MediaStore.Images.Media.DATA };
+
+			Cursor cursor = getContentResolver().query(selectedImage,
+					filePathColumn, null, null, null);
+			cursor.moveToFirst();
+
+			int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+			String filePath = cursor.getString(columnIndex);
+			cursor.close();
+
+			S3TaskResult result = new S3TaskResult();
+
+			// Put the image data into S3.
+			try {
+				s3Client.createBucket(Constants.getPictureBucket());
+				// Content type is determined by file extension.
+				PutObjectRequest por = new PutObjectRequest(
+						Constants.getPictureBucket(), pictureName,
+						new java.io.File(filePath));
+				s3Client.putObject(por);
+			} catch (Exception exception) {
+
+				result.setErrorMessage(exception.getMessage());
+			}
+
+			return result;
+		}
+
+		protected void onPostExecute(S3TaskResult result) {
+
+			dialog.dismiss();
+
+			if (result.getErrorMessage() != null) {
+
+				displayErrorAlert(
+						PhotoActivity.this
+								.getString(R.string.upload_failure_title),
+						result.getErrorMessage());
+			}
+		}
+	}
+
+	private class S3GeneratePresignedUrlTask extends	AsyncTask<Void, Void, S3TaskResult> {
+		
+		protected S3TaskResult doInBackground(Void... voids) {
+
+			S3TaskResult result = new S3TaskResult();
+
+			try {
+				// Ensure that the image will be treated as such.
+				ResponseHeaderOverrides override = new ResponseHeaderOverrides();
+				override.setContentType("image/jpeg");
+
+				// Generate the presigned URL.
+
+				// Added an hour's worth of milliseconds to the current time.
+				Date expirationDate = new Date(
+						System.currentTimeMillis() + 3600000);
+				GeneratePresignedUrlRequest urlRequest = new GeneratePresignedUrlRequest(
+						Constants.getPictureBucket(), pictureName);
+				urlRequest.setExpiration(expirationDate);
+				urlRequest.setResponseHeaders(override);
+
+				URL url = s3Client.generatePresignedUrl(urlRequest);
+
+				result.setUri(Uri.parse(url.toURI().toString()));
+
+			} catch (Exception exception) {
+
+				result.setErrorMessage(exception.getMessage());
+			}
+
+			return result;
+		}
+
+		protected void onPostExecute(S3TaskResult result) {
+			
+			if (result.getErrorMessage() != null) {
+
+				displayErrorAlert(
+						PhotoActivity.this
+								.getString(R.string.browser_failure_title),
+						result.getErrorMessage());
+			} else if (result.getUri() != null) {
+
+				// Display in Browser.
+				startActivity(new Intent(Intent.ACTION_VIEW, result.getUri()));
+			}
+		}
+	}
+
+	private class S3TaskResult {
+		String errorMessage = null;
+		Uri uri = null;
+
+		public String getErrorMessage() {
+			return errorMessage;
+		}
+
+		public void setErrorMessage(String errorMessage) {
+			this.errorMessage = errorMessage;
+		}
+
+		public Uri getUri() {
+			return uri;
+		}
+
+		public void setUri(Uri uri) {
+			this.uri = uri;
+		}
+	}
 }

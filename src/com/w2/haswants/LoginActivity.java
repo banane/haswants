@@ -53,7 +53,9 @@ public class LoginActivity extends Activity {
     	emailET = (EditText) findViewById(R.id.emailET);
     	String emailString = emailET.getText().toString();
     	Log.d(getClass().getName(), "emailstring: " + emailString);
-    	String urlString = getString(R.string.url_api_v1_login);
+    	String urlString = Constants.BASE_URL +  getString(R.string.url_api_v1_login);
+    	Log.d("haswants", "Login, http call: " + urlString);
+    	
     	new LoginUserTask().execute(urlString, emailString );
     	
     }

@@ -26,7 +26,7 @@ public class SearchActivity extends Activity {
         webView = (WebView) findViewById(R.id.webview);
 		webView.getSettings().setJavaScriptEnabled(true);
 		webView.setWebViewClient(new WebViewClient());
-		String url = getString(R.string.url_api_v1_search) + "?auth_token=" + person.getAuthToken();
+		String url = Constants.BASE_URL + getString(R.string.url_api_v1_search) + "?auth_token=" + person.getAuthToken();
 		Log.d("haswants", "search string: " + url);
 		webView.loadUrl(url);
     }

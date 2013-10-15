@@ -27,7 +27,7 @@ public class MainActivity extends Activity {
 		webView.getSettings().setJavaScriptEnabled(true);
 		webView.setWebViewClient(new WebViewClient());
 		
-		String url = getString(R.string.url_api_v1_stream) + "?auth_token=" + person.getAuthToken();
+		String url = Constants.BASE_URL + getString(R.string.url_api_v1_stream) + "?auth_token=" + person.getAuthToken();
 		webView.loadUrl(url);
     }
     

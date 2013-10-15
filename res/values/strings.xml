@@ -8,7 +8,7 @@
     <string name="buttonLogin">Login</string>
     <string name="emailError">Email is not registered for this event. Check that your email is correct."
 	</string>
-    <string name="app_name">Women2.0</string>
+    <string name="app_name">Connector</string>
     <string name="nullList">No events are currently available.</string>
     <string name="profilehead">Go ahead, introduce yourself.</string>
     <string name="nameLabel">Your name:</string>
@@ -17,8 +17,12 @@
     <string name="action_search">Search</string>
     <string name="action_return_stream">Attending</string>
     <string name="action_photo">Photo</string>
-    <string name="url_api_v1_stream">http://10.0.2.2:3000/api/v1/people</string>
-    <string name="url_api_v1_profile">http://10.0.2.2:3000/api/v1/people</string>
-    <string name="url_api_v1_search">http://10.0.2.2:3000/api/v1/search</string>
-    <string name="url_api_v1_login">http://10.0.2.2:3000/api/v1/tokens.json</string>
+    <string name="url_api_v1_stream">/api/v1/people</string>
+    <string name="url_api_v1_profile">/api/v1/people</string>
+    <string name="url_api_v1_search">/api/v1/search</string>
+    <string name="url_api_v1_login">/api/v1/tokens.json</string>
+    <string name="ok">OK</string>
+    <string name="uploading">uploading</string>
+    <string name="upload_failure_title">Unable to upload.</string>
+    <string name="browser_failure_title">Unable to launch browser.</string>
 </resources>

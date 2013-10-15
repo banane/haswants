@@ -27,7 +27,7 @@ public class ProfileActivity extends Activity {
 	        webView = (WebView) findViewById(R.id.webview);
 			webView.getSettings().setJavaScriptEnabled(true);
 			webView.setWebViewClient(new WebViewClient());
-			String url = getString(R.string.url_api_v1_profile) + "/" + person.getMyId() + "/edit?auth_token="+ person.getAuthToken() ;
+			String url = Constants.BASE_URL + getString(R.string.url_api_v1_profile) + "/" + person.getMyId() + "/edit?auth_token="+ person.getAuthToken() ;
 			Log.d("haswants", "url api v1 profile wth id: " + url);
 			webView.loadUrl(url);
 	   }

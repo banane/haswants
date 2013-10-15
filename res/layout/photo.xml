@@ -5,7 +5,15 @@
     android:orientation="vertical" >
 
     <Button
-        android:id="@+id/button1"
+        android:id="@+id/select_photo_button"
+        android:layout_width="426dip"
+        android:layout_height="426dip"
+        android:background="@drawable/addphoto"
+        android:onClick="clickCamera"
+        />
+    
+      <Button
+        android:id="@+id/show_in_browser_button"
         android:layout_width="426dip"
         android:layout_height="426dip"
         android:background="@drawable/addphoto"
