@@ -25,4 +25,8 @@
     <string name="uploading">uploading</string>
     <string name="upload_failure_title">Unable to upload.</string>
     <string name="browser_failure_title">Unable to launch browser.</string>
+    <string name="start_button">Create Profile</string>
+    <string name="wizard_1_para">Welcome to the Women 2.0 Connector Experience</string>
+    <string name="wizard_2_para">Connector helps make connections. See who\'s attending the conference, find people you want to meet, and discover who wants to meet you.</string>
+	<string name="wizard_3_para">Create your conference profile to get started.</string>
 </resources>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#FFFFFF"
+    android:orientation="vertical"
+    android:gravity="center_horizontal" >
+  
+	<ImageView 
+	    
+	    android:src="@drawable/women2logo"
+	    android:layout_width="225dip"
+	    android:layout_height="100dip"
+	    />
+    <TextView
+        android:id = "@+id/wizardPara1"
+        android:layout_width="225dip"
+        android:layout_height="59dp"
+        android:layout_marginTop="10dip"
+        android:gravity="center"
+        android:text="@string/wizard_1_para"
+        android:textColor="#000000"
+        android:textStyle="bold" 
+        android:textSize="18sp"
+        />
+    
+        <TextView
+            android:id="@+id/wizardPara2"
+            android:layout_width="225dip"
+            android:layout_height="97dp"
+            android:layout_marginTop="10dip"
+            android:gravity="left"
+            android:text="@string/wizard_2_para"
+            android:textColor="#000000"
+            android:textSize="14sp"
+            />
+
+        <TextView
+            android:id="@+id/wizardPara3"
+            android:layout_width="225dip"
+            android:layout_height="50dip"
+            android:layout_marginTop="30dip"
+            android:gravity="left"
+            android:text="@string/wizard_3_para"
+            android:textColor="#000000"
+            android:textSize="14sp" />
+
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="35dip"
+            android:layout_marginBottom="100dip"
+            android:layout_marginLeft="20dip"
+            android:layout_marginRight="20dip"
+            android:layout_marginTop="10dip"
+            android:background="@drawable/login_sel"
+            android:onClick="viewPhoto"
+            android:text="@string/start_button" />
+            
+            “
+
+            
+
+</LinearLayout>

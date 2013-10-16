@@ -33,6 +33,7 @@ public class LoginActivity extends Activity {
 	private EditText emailET;
 	private TextView introHeadTV;
 	private TextView introTV;
+	private Person person;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -41,10 +42,8 @@ public class LoginActivity extends Activity {
         
         Typeface typeFace=Typeface.createFromAsset(getAssets(),"fonts/Lato-Bol.ttf");
         
-        introHeadTV = (TextView) findViewById(R.id.introHeadTV);
         introTV = (TextView) findViewById(R.id.introTV)
         		;
-        introHeadTV.setTypeface(typeFace);
         introTV.setTypeface(typeFace);
         
     }
@@ -70,6 +69,20 @@ public class LoginActivity extends Activity {
     	introTV.setTextColor(Color.parseColor("#FF0000"));
     	introTV.setHeight(60);
     }
+    
+    private void DetermineWizard(){
+    	if(person.getProfilePhoto().length() == 0){
+    		Intent wizActivity = new Intent (getApplicationContext(), WizardActivity.class);     
+    		wizActivity.putExtra("Person",person);
+	    	startActivity(wizActivity);
+    	}else{
+	    	Intent mainActivity = new Intent (getApplicationContext(), MainActivity.class);     
+	    	mainActivity.putExtra("Person",person);
+	    	startActivity(mainActivity);
+    		
+    	}
+    }
+    
     private class LoginUserTask extends AsyncTask<String, Void, String> {
 
         protected String doInBackground(String... values) {
@@ -92,11 +105,9 @@ public class LoginActivity extends Activity {
 	            	String profilePhoto = jObject.getString("profile_photo");
 	            	String authToken = jObject.getString("token");
 	            	
-	            	Person person = new Person(firstName, MyId, profilePhoto, authToken);
+	            	person = new Person(firstName, MyId, profilePhoto, authToken);
 	            	Log.d("haswants", "in loginactivity, person id: " + person.getMyId());
-		        	Intent mainActivity = new Intent (getApplicationContext(), MainActivity.class);     
-		        	mainActivity.putExtra("Person",person);
-		        	startActivity(mainActivity);
+		        	DetermineWizard();
 	            } else {
 	            	errorLogin();
 	            	
