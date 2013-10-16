@@ -19,10 +19,12 @@ import java.util.Date;
 
 import com.w2.haswants.R;
 
+
 import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.regions.Region;
-import com.amazonaws.regions.Regions;
+
+import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.ResponseHeaderOverrides;
@@ -41,6 +43,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import java.util.Random;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class PhotoActivity extends Activity {
 
@@ -65,9 +70,9 @@ public class PhotoActivity extends Activity {
 		 person = (Person) getIntent().getSerializableExtra("Person");
 	     Log.d("haswants", "photo activity: " + person.getMyId());
 		
-		s3Client.setRegion(Region.getRegion(Regions.US_WEST_2));
-		String randomNumber = new Random().toString();
-		pictureName = "profile_" + person.getMyId() + "_" + randomNumber  + ".png";
+	//	s3Client.setRegion(Region.getRegion(Regions.US_WEST_2));
+	    int  randomNumer = 3 + (int)(Math.random()*100); 
+		pictureName = "profile_" + person.getMyId() + "_" + randomNumer + ".png";
 		
 		setContentView(R.layout.photo);
 
@@ -82,13 +87,7 @@ public class PhotoActivity extends Activity {
 			}
 		});
 
-		showInBrowser = (Button) findViewById(R.id.show_in_browser_button);
-		showInBrowser.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				new S3GeneratePresignedUrlTask().execute();
-			}
-		});
+		
 	}
 
 	// This method is automatically called by the image picker when an image is
@@ -179,18 +178,22 @@ public class PhotoActivity extends Activity {
 
 			S3TaskResult result = new S3TaskResult();
 
-			// Put the image data into S3.
-			try {
-				s3Client.createBucket(Constants.getPictureBucket());
-				// Content type is determined by file extension.
-				PutObjectRequest por = new PutObjectRequest(
-						Constants.getPictureBucket(), pictureName,
-						new java.io.File(filePath));
-				s3Client.putObject(por);
-			} catch (Exception exception) {
+				Log.d("haswants", "starting uplaod");
 
-				result.setErrorMessage(exception.getMessage());
-			}
+
+		         try {
+		         	//s3Client.createBucket( Constants.PICTURE_BUCKET );
+		         	
+		         	PutObjectRequest por = new PutObjectRequest( Constants.PICTURE_BUCKET, pictureName, new java.io.File(filePath) );  
+		         	por.setCannedAcl(CannedAccessControlList.PublicRead);
+		         	s3Client.putObject( por );
+		         	Log.d("haswants","********* file uploaded: "+ pictureName);
+
+		         }
+		         catch ( Exception exception ) {
+		         	Log.e("haswants", "Upload Failure:"+ exception.getMessage() );
+		         }
+		         // now post to server
 
 			return result;
 		}
@@ -198,6 +201,7 @@ public class PhotoActivity extends Activity {
 		protected void onPostExecute(S3TaskResult result) {
 
 			dialog.dismiss();
+			
 
 			if (result.getErrorMessage() != null) {
 
@@ -205,58 +209,24 @@ public class PhotoActivity extends Activity {
 						PhotoActivity.this
 								.getString(R.string.upload_failure_title),
 						result.getErrorMessage());
-			}
-		}
-	}
-
-	private class S3GeneratePresignedUrlTask extends	AsyncTask<Void, Void, S3TaskResult> {
-		
-		protected S3TaskResult doInBackground(Void... voids) {
-
-			S3TaskResult result = new S3TaskResult();
-
-			try {
-				// Ensure that the image will be treated as such.
+			} else {
 				ResponseHeaderOverrides override = new ResponseHeaderOverrides();
-				override.setContentType("image/jpeg");
+				override.setContentType( "image/png" );
+//				String pictureUrl = "https://mobilephotos.s3.amazonaws.com/" + pictureName;
+				GeneratePresignedUrlRequest urlRequest = new GeneratePresignedUrlRequest( Constants.getPictureBucket(), pictureName );
+				urlRequest.setExpiration( new Date( System.currentTimeMillis() + 3600000 ) );  // Added an hour's worth of milliseconds to the current time.
+				urlRequest.setResponseHeaders( override );
+				URL url = s3Client.generatePresignedUrl( urlRequest );
+				String pictureUrl = url.toString();
 
-				// Generate the presigned URL.
-
-				// Added an hour's worth of milliseconds to the current time.
-				Date expirationDate = new Date(
-						System.currentTimeMillis() + 3600000);
-				GeneratePresignedUrlRequest urlRequest = new GeneratePresignedUrlRequest(
-						Constants.getPictureBucket(), pictureName);
-				urlRequest.setExpiration(expirationDate);
-				urlRequest.setResponseHeaders(override);
-
-				URL url = s3Client.generatePresignedUrl(urlRequest);
-
-				result.setUri(Uri.parse(url.toURI().toString()));
-
-			} catch (Exception exception) {
-
-				result.setErrorMessage(exception.getMessage());
-			}
-
-			return result;
-		}
-
-		protected void onPostExecute(S3TaskResult result) {
-			
-			if (result.getErrorMessage() != null) {
-
-				displayErrorAlert(
-						PhotoActivity.this
-								.getString(R.string.browser_failure_title),
-						result.getErrorMessage());
-			} else if (result.getUri() != null) {
-
-				// Display in Browser.
-				startActivity(new Intent(Intent.ACTION_VIEW, result.getUri()));
+				String putString = Constants.BASE_URL +  getString(R.string.url_api_v1_profile) + "/" + person.getMyId()  + ".json";
+				new PostPhotoTask().execute(putString, pictureUrl, person.getAuthToken() );
 			}
 		}
 	}
+	
+
+	
 
 	private class S3TaskResult {
 		String errorMessage = null;
@@ -277,5 +247,25 @@ public class PhotoActivity extends Activity {
 		public void setUri(Uri uri) {
 			this.uri = uri;
 		}
+	}
+	
+	
+	private class PostPhotoTask extends AsyncTask<String, Void, String> {
+
+        protected String doInBackground(String... values) {
+          Log.i("haswants", "Starting... to upload post photo");
+          haswants appState = ((haswants)getApplicationContext());
+          String resultString = appState.postPhoto(values[0], values[1], values[2]);
+          return resultString;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+        	 Log.d("haswants", "finished updating profile photo");
+        	Intent profileActivity = new Intent (getApplicationContext(), ProfileActivity.class);     
+	    	profileActivity.putExtra("Person",person);
+	    	startActivity(profileActivity);
+        	
+        }
 	}
 }
