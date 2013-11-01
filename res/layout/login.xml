@@ -3,67 +3,70 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="#FFFFFF"
-    android:orientation="vertical"
-    android:gravity="center_horizontal" >
-  
-	<ImageView 
-	    
-	    android:src="@drawable/women2logo"
-	    android:layout_width="225dip"
-	    android:layout_height="100dip"
-	    />
-    
-     <TextView
-         android:id="@+id/introTV"
-         android:layout_width="225dip"
-         android:layout_height="30dip"
-         android:layout_marginTop="10dip"
-         android:layout_marginLeft="20dip"
-         android:layout_marginRight="20dip"
-        
-         android:gravity="left"
-         android:text="@string/introInfo"
-         android:textColor="#000000" />
+    android:gravity="center_horizontal"
+    android:orientation="vertical" >
+
+    <ImageView
+        android:layout_width="225dip"
+        android:layout_height="100dip"
+        android:src="@drawable/women2logo"
+        android:contentDescription="@string/logo_description" />
+
+    <TextView
+        android:id="@+id/introTV"
+        android:layout_width="225dip"
+        android:layout_height="30dip"
+        android:layout_marginLeft="20dip"
+        android:layout_marginRight="20dip"
+        android:layout_marginTop="10dip"
+        android:gravity="left"
+        android:text="@string/introInfo"
+        android:textColor="#000000" />
 
     <EditText
         android:id="@+id/emailET"
         android:layout_width="225dip"
         android:layout_height="wrap_content"
-
         android:layout_marginLeft="20dip"
         android:layout_marginRight="20dip"
         android:ems="18"
         android:inputType="textEmailAddress"
-        android:textColor="#000" >
+        android:textColor="#000"
+        android:background="#d3d3d3" >
 
         <requestFocus />
     </EditText>
 
     <Button
         android:layout_width="225dip"
-        android:layout_height="35dip"
-        android:layout_marginTop="10dip"
+        android:layout_height="45dip"
+        android:layout_marginBottom="80dip"
         android:layout_marginLeft="20dip"
         android:layout_marginRight="20dip"
+        android:layout_marginTop="10dip"
+        android:layout_weight="0.00"
+        android:background="@drawable/login_sel"
+        android:ems="13"
         android:onClick="loginUser"
         android:text="@string/buttonLogin"
-        android:layout_marginBottom="100dip"
-        android:background="@drawable/login_sel" 
-         />
-            
-              <TextView
-			        android:layout_width="225dip"
-			        android:layout_height="15dp"
-			        android:layout_marginTop="40dip"
-			        android:gravity="left"
-			        android:text="@string/ticketInfo"
-			        android:textColor="#000" />
+        android:textColor="#FFFFFF" />
 
-              <Button
-                  android:layout_width="225dip"
-                  android:layout_height="35dip"
-                  android:layout_marginTop="10dip"
-                  android:onClick="linkEvent"
-                  android:text="@string/buttonBuyTickets" />
+    <TextView
+        android:layout_width="225dip"
+        android:layout_height="15dp"
+        android:layout_marginTop="20dip"
+        android:gravity="left"
+        android:text="@string/ticketInfo"
+        android:textColor="#000" />
+
+    <Button
+        android:layout_width="225dip"
+        android:layout_height="45dip"
+        android:layout_marginTop="10dip"
+        android:ems="13"
+        android:onClick="linkEvent"
+        android:background="@drawable/gray_button_sel"
+        android:textColor="#FFFFFF"
+        android:text="@string/buttonBuyTickets" />
 
 </LinearLayout>

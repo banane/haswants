@@ -14,13 +14,14 @@
  */
 package com.w2.haswants;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Date;
 
 import com.w2.haswants.R;
 
-
-import com.amazonaws.auth.BasicAWSCredentials;
 
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3Client;
@@ -35,40 +36,33 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import java.util.Random;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 public class PhotoActivity extends Activity {
 
 	private AmazonS3Client s3Client = new AmazonS3Client(
 			new BasicAWSCredentials(Constants.ACCESS_KEY_ID,
 					Constants.SECRET_KEY));
-
-	private Button selectPhoto = null;
-	private Button showInBrowser = null;
-
-	private static final int PHOTO_SELECTED = 1;
-	
 	private  String pictureName;
 	private Person person;
+	final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 123;
+	private String TAG = "CONNECTOR";
+	private String fileNameStr;
 
-
-	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
 		 person = (Person) getIntent().getSerializableExtra("Person");
-	     Log.d("haswants", "photo activity: " + person.getMyId());
+	     Log.d(TAG, "photo activity: " + person.getMyId());
 		
 	//	s3Client.setRegion(Region.getRegion(Regions.US_WEST_2));
 	    int  randomNumer = 3 + (int)(Math.random()*100); 
@@ -76,76 +70,35 @@ public class PhotoActivity extends Activity {
 		
 		setContentView(R.layout.photo);
 
-		selectPhoto = (Button) findViewById(R.id.select_photo_button);
-		selectPhoto.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				// Start the image picker.
-				Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-				intent.setType("image/*");
-				startActivityForResult(intent, PHOTO_SELECTED);
-			}
-		});
-
 		
 	}
+	
+	public void clickCamera(View v){
+		
+		Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE); 
+		startActivityForResult(cameraIntent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+	}
 
-	// This method is automatically called by the image picker when an image is
-	// selected.
-	protected void onActivityResult(int requestCode, int resultCode,
-			Intent imageReturnedIntent) {
-		super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
-
-		switch (requestCode) {
-		case PHOTO_SELECTED:
-			if (resultCode == RESULT_OK) {
-
-				Uri selectedImage = imageReturnedIntent.getData();
-				new S3PutObjectTask().execute(selectedImage);
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		Log.d(TAG, "resultCode: " + resultCode);
+		Log.d(TAG, "requestCode: "+ requestCode);
+		
+		if(requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE){
+			if ((resultCode == RESULT_OK) && (data != null)){
+				Bitmap imageData = (Bitmap) data.getExtras().get("data");
+	
+				Log.d(TAG, "resultcode: camera pic request, about to kick off s3 put object task");
+				new S3PutObjectTask().execute(imageData);
+			} else {
+				Log.e(TAG, "Error: no data or result error");
 			}
+		} else {
+			Log.e(TAG, "resultcode was not activity result");
 		}
 	}
 
-	// Display an Alert message for an error or failure.
-	protected void displayAlert(String title, String message) {
 
-		AlertDialog.Builder confirm = new AlertDialog.Builder(this);
-		confirm.setTitle(title);
-		confirm.setMessage(message);
-
-		confirm.setNegativeButton(
-				PhotoActivity.this.getString(R.string.ok),
-				new DialogInterface.OnClickListener() {
-
-					public void onClick(DialogInterface dialog, int which) {
-
-						dialog.dismiss();
-					}
-				});
-
-		confirm.show().show();
-	}
-
-	protected void displayErrorAlert(String title, String message) {
-
-		AlertDialog.Builder confirm = new AlertDialog.Builder(this);
-		confirm.setTitle(title);
-		confirm.setMessage(message);
-
-		confirm.setNegativeButton(
-				PhotoActivity.this.getString(R.string.ok),
-				new DialogInterface.OnClickListener() {
-
-					public void onClick(DialogInterface dialog, int which) {
-
-						PhotoActivity.this.finish();
-					}
-				});
-
-		confirm.show().show();
-	}
-
-	private class S3PutObjectTask extends AsyncTask<Uri, Void, S3TaskResult> {
+	private class S3PutObjectTask extends AsyncTask<Bitmap, Void, S3TaskResult> {
 
 		ProgressDialog dialog;
 
@@ -157,14 +110,15 @@ public class PhotoActivity extends Activity {
 			dialog.show();
 		}
 
-		protected S3TaskResult doInBackground(Uri... uris) {
+		protected S3TaskResult doInBackground(Bitmap... uris) {
 
 			if (uris == null || uris.length != 1) {
 				return null;
 			}
 
 			// The file location of the image selected.
-			Uri selectedImage = uris[0];
+			Bitmap imageData = uris[0];
+         	/*Log.d(TAG,"assigned uri selectedimage from arguments");
 
 			String[] filePathColumn = { MediaStore.Images.Media.DATA };
 
@@ -175,23 +129,39 @@ public class PhotoActivity extends Activity {
 			int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
 			String filePath = cursor.getString(columnIndex);
 			cursor.close();
+         	Log.d(TAG,"put image data into filepath");*/
+			
+			try {
+				String root = Environment.getExternalStorageDirectory().toString();
+				fileNameStr = root + "/haswants" + pictureName;
+				FileOutputStream out = new FileOutputStream(fileNameStr);
+				imageData.compress(Bitmap.CompressFormat.PNG, 90, out);
+				out.close();
+				Log.d(TAG, "Saved: " + fileNameStr);
+			} catch (FileNotFoundException e) {
+				Log.e(TAG,"filenotfound: " + e.toString());
+			} catch (IOException e) {
+				Log.e(TAG, "ioexcpetion:" + e.toString());
+			} catch (Exception e) {
+				Log.e(TAG, "general exception: " + e.toString());
+			} 
+
 
 			S3TaskResult result = new S3TaskResult();
 
-				Log.d("haswants", "starting uplaod");
+				Log.d(TAG, "starting upload");
 
 
 		         try {
-		         	//s3Client.createBucket( Constants.PICTURE_BUCKET );
 		         	
-		         	PutObjectRequest por = new PutObjectRequest( Constants.PICTURE_BUCKET, pictureName, new java.io.File(filePath) );  
+		         	PutObjectRequest por = new PutObjectRequest( Constants.PICTURE_BUCKET, pictureName, new java.io.File(fileNameStr) );  
 		         	por.setCannedAcl(CannedAccessControlList.PublicRead);
 		         	s3Client.putObject( por );
-		         	Log.d("haswants","********* file uploaded: "+ pictureName);
+		         	Log.d(TAG,"********* file uploaded: "+ pictureName);
 
 		         }
 		         catch ( Exception exception ) {
-		         	Log.e("haswants", "Upload Failure:"+ exception.getMessage() );
+		         	Log.e(TAG, "Upload Failure:"+ exception.getMessage() );
 		         }
 		         // now post to server
 
@@ -261,11 +231,51 @@ public class PhotoActivity extends Activity {
 
         @Override
         protected void onPostExecute(String result) {
-        	 Log.d("haswants", "finished updating profile photo");
+        	 Log.d(TAG, "finished updating profile photo");
         	Intent profileActivity = new Intent (getApplicationContext(), ProfileActivity.class);     
 	    	profileActivity.putExtra("Person",person);
 	    	startActivity(profileActivity);
         	
         }
 	}
+	
+	// Display an Alert message for an error or failure.
+	protected void displayAlert(String title, String message) {
+
+		AlertDialog.Builder confirm = new AlertDialog.Builder(this);
+		confirm.setTitle(title);
+		confirm.setMessage(message);
+
+		confirm.setNegativeButton(
+				PhotoActivity.this.getString(R.string.ok),
+				new DialogInterface.OnClickListener() {
+
+					public void onClick(DialogInterface dialog, int which) {
+
+						dialog.dismiss();
+					}
+				});
+
+		confirm.show().show();
+	}
+
+	protected void displayErrorAlert(String title, String message) {
+
+		AlertDialog.Builder confirm = new AlertDialog.Builder(this);
+		confirm.setTitle(title);
+		confirm.setMessage(message);
+
+		confirm.setNegativeButton(
+				PhotoActivity.this.getString(R.string.ok),
+				new DialogInterface.OnClickListener() {
+
+					public void onClick(DialogInterface dialog, int which) {
+
+						PhotoActivity.this.finish();
+					}
+				});
+
+		confirm.show().show();
+	}
+
 }

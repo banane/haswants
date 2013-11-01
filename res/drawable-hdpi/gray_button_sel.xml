@@ -4,10 +4,10 @@
     <item android:state_pressed="true" >
         <shape>
              <solid
-          		android:color="#B2224F" />
+          		android:color="#1A1A1A" />
             <stroke
                 android:width="1dp"
-                android:color="#B2224F" />
+                android:color="#1A1A1A" />
            
             <padding
                 android:left="10dp"
@@ -20,10 +20,10 @@
     <item android:state_focused="true" >
         <shape>
             <solid
-          		android:color="#E53868" />
+          		android:color="#333333" />
             <stroke
                 android:width="1dp"
-                android:color="#E53868" />
+                android:color="#333333" />
            
             <padding
                 android:left="10dp"
@@ -36,10 +36,10 @@
     <item>        
         <shape>
             <solid
-          		android:color="#E53868" />
+          		android:color="#333333" />
             <stroke
                 android:width="1dp"
-                android:color="#E53868" />
+                android:color="#333333" />
            
             <padding
                 android:left="10dp"

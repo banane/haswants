@@ -5,9 +5,8 @@
     <string name="introInfo">ACCESS THE EVENT</string>
     <string name="ticketInfo">Not registered?</string>
     <string name="buttonBuyTickets">buy ticket</string>
-    <string name="buttonLogin">Login</string>
-    <string name="emailError">Email is not registered for this event. Check that your email is correct."
-	</string>
+    <string name="buttonLogin">LOGIN</string>
+    <string name="emailError">Unable to log you in for this event.</string>
     <string name="app_name">Connector</string>
     <string name="nullList">No events are currently available.</string>
     <string name="profilehead">Go ahead, introduce yourself.</string>
@@ -22,11 +21,16 @@
     <string name="url_api_v1_search">/api/v1/search</string>
     <string name="url_api_v1_login">/api/v1/tokens.json</string>
     <string name="ok">OK</string>
+    <string name="logging_in">logging in</string>
+    <string name="email_subject">Request to connect from Women2.0 Connector app</string>
+    <string name="email_footer">\n\n----\n\nSent from Women2.0 Connector app.\n Check it out here: http://www.women2.com/mobile</string>
     <string name="uploading">uploading</string>
     <string name="upload_failure_title">Unable to upload.</string>
     <string name="browser_failure_title">Unable to launch browser.</string>
-    <string name="start_button">Create Profile</string>
-    <string name="wizard_1_para">Welcome to the Women 2.0 Connector Experience</string>
+    <string name="start_button">CREATE PROFILE</string>
+    <string name="wizard_1_para">Welcome to the Women 2.0 Connector app.</string>
     <string name="wizard_2_para">Connector helps make connections. See who\'s attending the conference, find people you want to meet, and discover who wants to meet you.</string>
 	<string name="wizard_3_para">Create your conference profile to get started.</string>
+	<string name="logo_description">Women2.0 Logo</string>
+	<string name="photo_intro">Add a photo to let attendees know who to look out for.</string>
 </resources>

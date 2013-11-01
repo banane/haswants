@@ -2,16 +2,27 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical" 
+    android:background="#FFFFFF">
 
+     <TextView
+        android:id="@+id/photoIntro"
+        android:layout_width="209dip"
+        android:layout_gravity="center"
+        android:layout_height="35dip"
+        android:layout_marginTop="40dip"
+        android:gravity="left"
+        android:ems="14"
+        android:text="@string/photo_intro"
+        android:textColor="#000000" />
+    
     <Button
         android:id="@+id/select_photo_button"
-        android:layout_width="match_parent"
-        android:layout_height="200dip"
+        android:layout_width="209dp"
+        android:layout_height="194dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="50dip"
         android:background="@drawable/addphoto"
-        android:onClick="clickCamera"
-        />
-    
-     
+        android:onClick="clickCamera" />
 
 </LinearLayout>

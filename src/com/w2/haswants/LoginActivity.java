@@ -16,6 +16,7 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import android.app.ProgressDialog;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -24,9 +25,12 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+
+
 
 public class LoginActivity extends Activity {
     /** Called when the activity is first created. */
@@ -84,12 +88,21 @@ public class LoginActivity extends Activity {
     }
     
     private class LoginUserTask extends AsyncTask<String, Void, String> {
+    	ProgressDialog dialog;
 
         protected String doInBackground(String... values) {
           Log.i("LOGGER", "Starting...");
           haswants appState = ((haswants)getApplicationContext());
           String resultString = appState.postLogin(values[0], values[1]);
           return resultString;
+        }
+        
+     	protected void onPreExecute() {
+    			dialog = new ProgressDialog(LoginActivity.this);
+    			dialog.setMessage(LoginActivity.this
+    					.getString(R.string.logging_in));
+    			dialog.setCancelable(false);
+    			dialog.show();
         }
 
         @Override
@@ -117,6 +130,7 @@ public class LoginActivity extends Activity {
         		errorLogin();
         	}
             Log.i("LOGGER", "...Done");
+            dialog.dismiss();
  
         }
 

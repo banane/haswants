@@ -23,6 +23,9 @@ import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
+import com.testflightapp.lib.TestFlight;
+
+
 
 import android.app.Application;
 import android.util.Log;
@@ -31,6 +34,17 @@ public class haswants extends Application {
 	private HttpPost httpPost;
 	private String responseString;
 	private HttpEntity resEntity;	
+	
+	
+	
+   @Override
+   public void onCreate() {
+        super.onCreate();
+	        //Initialize TestFlight with your app token.
+        TestFlight.takeOff(this, Constants.TEST_FLIGHT_TOKEN);
+
+    }
+	
 	public String postLogin(String URL, String email) {
 		
 		   try {
